@@ -46,6 +46,15 @@ def create_task():
     task_id_counter += 1
     
     return jsonify(task), 201
-
+@app.route('/tasks/<int:task_id>/complete', methods=['PUT'])
+def complete_task(task_id):
+    task = next((t for t in tasks if t['id'] == task_id), None)
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+    
+    task['completed'] = True
+    task['updated_at'] = datetime.now().isoformat()
+    
+    return jsonify(task)
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
